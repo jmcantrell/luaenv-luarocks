@@ -57,7 +57,7 @@ configure_luarocks() {
 	local version=$1
 	echo "Installing luarocks $version"
 
-	cd "$luarocks_repo"
+	pushd "$luarocks_repo" >/dev/null
 
 	local tag=v$version
 	git fetch --depth 1 origin tags/"$tag"
@@ -71,22 +71,24 @@ configure_luarocks() {
 		--with-lua-bin="$lua_prefix"/bin \
 		--with-lua-include="$lua_prefix"/include \
 		--force-config
+
+	popd >/dev/null
 }
 
 do_install() {
 	configure_luarocks "$@"
-	make bootstrap
+	make -C "$luarocks_repo" bootstrap
 	luaenv rehash
 }
 
 do_uninstall() {
 	configure_luarocks "$@"
-	make uninstall
+	make -C "$luarocks_repo" uninstall
 	luaenv rehash
 }
 
 if [[ -d $luarocks_repo ]]; then
-	git -C "$luarocks_repo" pull origin master
+	git -C "$luarocks_repo" fetch origin master
 else
 	git clone --depth=1 https://github.com/luarocks/luarocks.git "$luarocks_repo"
 fi

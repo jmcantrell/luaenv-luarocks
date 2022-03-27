@@ -48,8 +48,32 @@ install_luarocks() {
     popd >/dev/null || return 1
 }
 
+install_default_rocks() {
+    local default_rocks=${LUAENV_LUAROCKS_DEFAULT_ROCKS:-$LUAENV_ROOT/default-rocks}
+
+    # If there's no package list, no need to continue.
+    [[ -f $default_rocks ]] || return 0
+
+    local args
+    while IFS=" " read -ra args; do
+        # Skip empty lines.
+        ((${#args[@]} == 0)) && continue
+
+        # Skip comment lines that begin with `#`.
+        [[ ${args[0]:0:1} == "#" ]] && continue
+
+        # Invoke `luarocks install` in the just-installed Lua.
+        # Point its stdin to /dev/null or else it'll read from our default-rocks file.
+        if ! LUAENV_VERSION=$VERSION_NAME luaenv-exec luarocks install "${args[@]}" </dev/null; then
+            echo "luaenv: error installing rock \`${args[0]}'" >&2
+            return 1
+        fi
+    done <"$default_rocks"
+}
+
 if declare -Ff after_install >/dev/null; then
     after_install install_luarocks
+    after_install install_default_rocks
 else
     echo "luaenv: luaenv-luarocks plugin requires a lua-build version with the after_install hook" >&2
 fi

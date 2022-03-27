@@ -3,6 +3,11 @@
 This plugin provides a hook for [luaenv](https://github.com/cehoffman/luaenv)
 that ensures [LuaRocks](https://github.com/luarocks/luarocks) is installed after Lua.
 
+## Dependencies
+
+Beyond the basic requirements of luaenv, `curl` and `jq` are required
+to fetch and parse JSON data from GitHub.
+
 ## Installation
 
 With git:

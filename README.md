@@ -1,40 +1,21 @@
 # luaenv-luarocks
 
-This is a plugin for [luaenv](https://github.com/cehoffman/luaenv)
-that lets you manage versions of
-[LuaRocks](https://github.com/luarocks/luarocks).
+This plugin provides a hook for [luaenv](https://github.com/cehoffman/luaenv)
+that ensures [LuaRocks](https://github.com/luarocks/luarocks) is installed after Lua.
 
 ## Installation
 
 With git:
+
 ```sh
 git clone https://github.com/jmcantrell/luaenv-luarocks.git "$(luaenv root)"/plugins/luaenv-luarocks
 ```
 
 ## Usage
 
-List all available LuaRocks versions:
+By default, `luaenv install VERSION` will include the latest version
+of LuaRocks. If you need a different version, specify it like so:
 
 ```sh
-luaenv luarocks list
-```
-
-Install the latest version of LuaRocks in the version of lua used by luaenv:
-```sh
-luaenv luarocks install
-```
-
-Install a specific version:
-```sh
-luaenv luarocks install 3.8.0
-```
-
-Uninstall the latest version:
-```sh
-luaenv luarocks uninstall
-```
-
-Uninstall a specific version:
-```sh
-luaenv luarocks uninstall 3.8.0
+LUAENV_LUAROCKS_VERSION=3.8.0 luaenv install 5.4.4
 ```
